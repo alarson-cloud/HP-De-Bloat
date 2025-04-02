@@ -90,9 +90,9 @@ Try{
         Write-Output 'Checking for HP Connection Optimizer'
         if (test-path -Path 'C:\Program Files (x86)\InstallShield Installation Information\{6468C4A5-E47E-405F-B675-A70A70983EA6}\setup.exe') {
         Write-Output 'Connection Optimizer found'
-        invoke-webrequest -uri "https://raw.githubusercontent.com/andrew-s-taylor/public/main/De-Bloat/HPConnOpt.iss" -outfile "C:\Windows\Temp\HPConnOpt.iss"
+        invoke-webrequest -uri "https://raw.githubusercontent.com/alarson-cloud/HP-De-Bloat/refs/heads/main/HPConnectionOptimizer.iss" -outfile "C:\Windows\Temp\HPConnectionOptimizer.iss"
 
-        &'C:\Program Files (x86)\InstallShield Installation Information\{6468C4A5-E47E-405F-B675-A70A70983EA6}\setup.exe' @('-s', '-f1C:\Windows\Temp\HPConnOpt.iss')
+        &'C:\Program Files (x86)\InstallShield Installation Information\{6468C4A5-E47E-405F-B675-A70A70983EA6}\setup.exe' @('-s', '-f1C:\Windows\Temp\HPConnectionOptimizer.iss')
     }
 
         Write-Output 'Testing path Amazon'
