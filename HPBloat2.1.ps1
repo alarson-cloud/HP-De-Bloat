@@ -1,4 +1,9 @@
-﻿Start-Transcript -Path C:\ProgramData\Microsoft\IntuneManagementExtension\Logs\HPBloat.log -Append
+#Requires -Version 5.1
+#alarson@hbs.net - 2025-04-2
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$InformationPreference = 'Continue'
+Start-Transcript -Path "$($env:ProgramData)\Microsoft\IntuneManagementExtension\Logs\HPBloat.log" -Append
 
 $orderofuninstall = @(
         "Poly Lens"
@@ -40,7 +45,7 @@ Function Get-HP-MSI {
                 $appName = $_.GetValue("DisplayName", $null)
                 $uninstallString = $_.GetValue("UninstallString", $null)
 
-                if ($appName -match "HP" -and $uninstallString -match "{[A-F0-9\-]+}") {
+                if ($appName -match "(HP|ICS)" -and $uninstallString -match "{[A-F0-9\-]+}") {
                     $guid = $matches[0]  
 
                     [PSCustomObject]@{
