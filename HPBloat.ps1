@@ -130,9 +130,9 @@ Try {
             }
         
             # ---------- MICROSOFT 365 UNINSTALL SECTION ----------
-            Sleep -Seconds 20
-            Write-Output "Starting Microsoft 365 Apps uninstallation..."
-        
+            Start-Sleep -Seconds 20
+            Write-Output "Checking for Microsoft 365 Apps..."
+
             $patterns = @(
                 "*Microsoft 365 - en-us*",
                 "*Aplicaciones de Microsoft 365*",
@@ -140,27 +140,75 @@ Try {
                 "*Microsoft OneNote - es-mx*",
                 "*Microsoft OneNote - fr-ca*"
             )
-            
-            $OfficeUninstallStrings = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* |
-                Where-Object { $_.PSObject.Properties.Name -contains "DisplayName" -and $_.DisplayName -like "*Microsoft 365 - en-us*" } |
-                Select-Object -ExpandProperty UninstallString
-            
-                if($OfficeUninstallStrings.Count -gt 0){ 
-                foreach ($pattern in $patterns) {
-                    $OfficeUninstallStrings = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* |
+
+            # Collect all uninstall strings matching the patterns
+            $OfficeUninstallStrings = foreach ($pattern in $patterns) {
+                Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* -ErrorAction SilentlyContinue |
                         Where-Object { $_.PSObject.Properties.Name -contains "DisplayName" -and $_.DisplayName -like $pattern } |
                         Select-Object -ExpandProperty UninstallString -ErrorAction SilentlyContinue
-        
+            }
+
+            # If anything was found, proceed
+            if ($OfficeUninstallStrings) {
+                Write-Output "Starting Microsoft 365 Apps uninstallation..."
+
                     foreach ($UninstallString in $OfficeUninstallStrings) {
+                        if (-not [string]::IsNullOrWhiteSpace($UninstallString)) {
                         Write-Output "Uninstalling: $UninstallString"
-                        $UninstallEXE = ($UninstallString -split '"')[1]
-                        $UninstallArg = ($UninstallString -split '"')[2] + " DisplayLevel=False"
-                        Start-Process -FilePath $UninstallEXE -ArgumentList $UninstallArg -Wait
-                    }
-                }
-                Write-Output "Microsoft 365 Apps uninstallation script completed."
-            } else { Write-Output "No Microsoft 365 Apps install detected. "
+
+                        try {
+                            $UninstallEXE = ($UninstallString -split '"')[1]
+                            $UninstallArg = ($UninstallString -split '"')[2] + " DisplayLevel=False"
+                            Start-Process -FilePath $UninstallEXE -ArgumentList $UninstallArg -Wait
+                      } catch {
+                Write-Warning "Failed to uninstall with string: $UninstallString. Error: $_"
+            }
         }
+    }
+
+    Write-Output "Microsoft 365 Apps uninstallation script completed."
+} else {
+    Write-Output "No Microsoft 365 Apps install detected."
+}
+
+                   # ---------- AppX UNINSTALL SECTION ----------
+
+$Appx = @(
+    "*CandyCrush*"
+    "*DevHome*"
+    "*Disney*"
+    "*Dolby*"
+    "*EclipseManager*"
+    "*Facebook*"
+    "*Flipboard*"
+    "*gaming*"
+    "*Minecraft*"
+    "*Office*"
+    "*PandoraMediaInc*"
+    "*Speed Test*"
+    "*Spotify*"
+    "*Sway*"
+    "*Twitter*"
+        )
+
+            $appXInstalled = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -in $Appx}
+            if($appXInstalled){ 
+                foreach($app in $appXInstalled){
+                    Remove-AppxProvisionedPackage -PackageName $app.PackageFullName -Online -ErrorAction SilentlyContinue
+                    Write-Output "Removed $($app.Name)" 
+                }
+                $AllappXInstalled = Get-AppxPackage -AllUsers | Where-Object {$_.DisplayName -in $Appx}
+                foreach($app in $AllappXInstalled){ 
+                    Remove-AppxPackage -package $app.PackageFullName -AllUsers -ErrorAction SilentlyContinue
+                    Write-Output "Removed $($app.Name)"
+
+                }
+                
+
+            }else { 
+                Write-Output "No Appx detected."
+            } 
+                
             
         
         } Catch {
