@@ -189,6 +189,7 @@ $Appx = @(
     "*Spotify*"
     "*Sway*"
     "*Twitter*"
+    "Microsoft.MicrosoftSolitaireCollection"
     "Microsoft.Xbox.TCUI"
     "Microsoft.XboxApp"
     "Microsoft.XboxGameOverlay"
