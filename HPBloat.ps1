@@ -192,6 +192,7 @@ $Appx = @(
     "Microsoft.Xbox.TCUI"
     "Microsoft.XboxApp"
     "Microsoft.XboxGameOverlay"
+    "Microsoft.XboxGameCallableUI"
     "Microsoft.XboxGamingOverlay"
     "Microsoft.XboxGamingOverlay_5.721.10202.0_neutral_~_8wekyb3d8bbwe"
     "Microsoft.XboxIdentityProvider"
@@ -201,10 +202,10 @@ $Appx = @(
             $appXInstalled = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -in $Appx}
             if($appXInstalled){ 
                 foreach($app in $appXInstalled){
-                    Remove-AppxProvisionedPackage -PackageName $app.PackageFullName -Online -ErrorAction SilentlyContinue
+                    Remove-AppxProvisionedPackage -PackageName $app.PackageName -Online -ErrorAction SilentlyContinue
                     Write-Output "Removed $($app.Name)" 
                 }
-                $AllappXInstalled = Get-AppxPackage -AllUsers | Where-Object {$_.DisplayName -in $Appx}
+                $AllappXInstalled = Get-AppxPackage -AllUsers | Where-Object {$_.Name -in $Appx}
                 foreach($app in $AllappXInstalled){ 
                     Remove-AppxPackage -package $app.PackageFullName -AllUsers -ErrorAction SilentlyContinue
                     Write-Output "Removed $($app.Name)"
