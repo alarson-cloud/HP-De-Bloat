@@ -197,6 +197,7 @@ $Appx = @(
     "Microsoft.XboxGamingOverlay"
     "Microsoft.XboxGamingOverlay_5.721.10202.0_neutral_~_8wekyb3d8bbwe"
     "Microsoft.XboxIdentityProvider"
+    "Microsoft.XboxSpeechToTextOverlay"
         )
 
             $appXInstalled = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -in $Appx}
