@@ -200,23 +200,23 @@ $Appx = @(
     "Microsoft.XboxSpeechToTextOverlay"
         )
 
-            $appXInstalled = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -in $Appx}
-            if($appXInstalled){ 
-                foreach($app in $appXInstalled){
-                    Remove-AppxProvisionedPackage -PackageName $app.PackageName -Online -ErrorAction SilentlyContinue
-                    Write-Output "Removed $($app.Name)" 
-                }
-                $AllappXInstalled = Get-AppxPackage -AllUsers | Where-Object {$_.Name -in $Appx}
-                foreach($app in $AllappXInstalled){ 
-                    Remove-AppxPackage -package $app.PackageFullName -AllUsers -ErrorAction SilentlyContinue
-                    Write-Output "Removed $($app.Name)"
+        $appXInstalled = Get-AppxProvisionedPackage -Online | Where-Object {$_.DisplayName -in $Appx}
+        if($appXInstalled){ 
+            foreach($app in $appXInstalled){
+                Remove-AppxProvisionedPackage -PackageName $app.PackageName -Online -ErrorAction SilentlyContinue
+                Write-Output "Removed $($app.DisplayName)" 
+            }
+            $AllappXInstalled = Get-AppxPackage -AllUsers | Where-Object {$_.Name -in $Appx}
+            foreach($app in $AllappXInstalled){ 
+                Remove-AppxPackage -package $app.PackageFullName -AllUsers -ErrorAction SilentlyContinue
+                Write-Output "Removed $($app.Name)"
 
-                }
-                
+            }
+            
 
-            }else { 
-                Write-Output "No Appx detected."
-            } 
+        }else { 
+            Write-Output "No Appx detected."
+        } 
                 
             
         
